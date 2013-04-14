@@ -1,7 +1,13 @@
-#include "interval_arithmetic.h"
+#include "libs.h"
 
-using intervalarth::interval;
-
-int main() {
-	return 0;
+void createGui() {
+	QWidget * window = new QWidget();
+	window->resize(100, 100);
+	window->setWindowTitle("cos");
+	window->show();
 }
+
+int main(int argc, char *argv[]) {
+	return Program::run(argc, argv);
+}
+

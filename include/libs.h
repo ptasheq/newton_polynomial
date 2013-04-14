@@ -1,16 +1,28 @@
 #ifndef LIBS_H
 #define LIBS_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <exception>
-#include <stdexcept>
-#include <fenv.h>
-#include <cstdlib>
-#include <cmath>
-#include <stdint.h>
-#include <mpfr.h>
-#include <boost/lexical_cast.hpp>
+#include <QApplication>
+#include <QWidget>
+#include <QStyle>
+#include <QDesktopWidget>
+
+#define HEIGHT 400
+#define WIDTH 500
+#define TITLE "Newton Polynomial"
+
+class Program {
+	private: 
+		QApplication * app;
+		QWidget * window;
+		Program(QApplication * app) : app(app), window(NULL) {}
+		void destroyGui();
+		void createGui();
+	public:
+		~Program();
+		void run();
+		static int run(int, char*[]);
+		const QApplication * getApp();
+		const QWidget * getWindow();		
+};
 
 #endif

@@ -11,7 +11,17 @@
 
 #ifndef INTERVALARITHMETIC_H_
 #define INTERVALARITHMETIC_H_
-#include "libs.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <exception>
+#include <stdexcept>
+#include <fenv.h>
+#include <cstdlib>
+#include <cmath>
+#include <stdint.h>
+#include <mpfr.h>
+#include <boost/lexical_cast.hpp>
 
 using std::string;
 using std::runtime_error;
