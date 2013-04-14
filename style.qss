@@ -1,0 +1,14 @@
+QPushButton {
+	font-family: "Purisa";
+	font-size: 11px;
+}
+
+QLabel {
+	font-family: "Purisa";
+	font-size: 13px
+}
+
+QTextEdit {
+	font-size: 11px;
+	font-family: "Monaco"
+}
