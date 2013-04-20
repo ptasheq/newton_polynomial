@@ -451,7 +451,6 @@ interval IntervalArithmetic::IntRead(const string & sa) {
 	mpfr_t rop;
 	mpfr_init2(rop, 80);
 	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDD);
-	;
 	long double le = mpfr_get_ld(rop, MPFR_RNDD);
 	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDU);
 	long double re = mpfr_get_ld(rop, MPFR_RNDU);

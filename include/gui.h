@@ -6,26 +6,33 @@
 #include <QStyle>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QLabel>
+#include <QFile>
+#include <QTextEdit>
 
 #define HEIGHT 400
 #define WIDTH 500
+#define BTN_HEIGHT 30
+#define BTN_WIDTH 75
 #define TITLE "Newton Polynomial"
-#define BTN_CAPTION "Calculate"
+#define CAPTION "Calculate"
+#define STYLE_FILE "style.qss"
 
 class Gui {
 	private:
 		QApplication * app;
 		QWidget * window;
-		QPushButton * valueBtn;
-		QPushButton * coeffBtn;
+		QPushButton * valueBtn, * coeffBtn;
+		QLabel * coeffLabel, * valueLabel;
+		QTextEdit * coeffEdit, * valueEdit;
 		int width, height;
 		QString title;
+		void loadStyles();
 		void prepare();
-		Gui();
 	public:
+		Gui();
 		~Gui();
-		static Gui & getInstance();
-		void start(QApplication *);
+		void run(QApplication *);
 };
 
 #endif

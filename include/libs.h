@@ -2,33 +2,13 @@
 #define LIBS_H
 
 #include <QApplication>
-#include <QWidget>
-#include <QStyle>
-#include <QDesktopWidget>
-#include <QPushButton>
-#include <QLabel>
-#include <QFile>
-#include <QTextEdit>
-
-#define HEIGHT 400
-#define WIDTH 500
-#define BTN_HEIGHT 30
-#define BTN_WIDTH 75
-#define TITLE "Newton Polynomial"
-#define CAPTION "Calculate"
-#define STYLE_FILE "style.qss"
+#include "gui.h"
 
 class Program {
 	private: 
 		QApplication * app;
-		QWidget * window;
-		QPushButton * coeffBtn, * valueBtn;
-		QLabel * coeffLabel, * valueLabel;
-		QTextEdit * coeffEdit, * valueEdit;
-		Program(QApplication * app) : app(app), window(NULL) {}
-		void destroyGui();
-		void createGui();
-		void loadStyles();
+		Gui * gui;
+		Program(QApplication * app) : app(app), gui(new Gui()){}
 	public:
 		~Program();
 		void run();
