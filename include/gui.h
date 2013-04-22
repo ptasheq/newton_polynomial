@@ -9,6 +9,8 @@
 #include <QLabel>
 #include <QFile>
 #include <QTextEdit>
+#include <QSignalMapper>
+#include <QString>
 
 #define HEIGHT 500
 #define WIDTH 500
@@ -22,6 +24,7 @@ class Gui {
 	private:
 		QApplication * app;
 		QWidget * window;
+		QSignalMapper * signalMapper;
 		QPushButton * valueBtn, * coeffBtn;
 		QLabel * coeffLabel, * valueLabel, * resultLabel;
 		QTextEdit * coeffEdit, * valueEdit, * resultEdit;

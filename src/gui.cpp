@@ -1,5 +1,6 @@
 #include "gui.h" 
 #include "mathcore.h"
+#include "translator.h"
 
 Gui::Gui() : width(WIDTH), height(HEIGHT), title(TITLE) {
 	window = new QWidget();
@@ -23,6 +24,7 @@ Gui::~Gui() {
 	delete coeffEdit;
 	delete valueEdit;
 	delete resultEdit;
+	delete signalMapper;
 	delete window;
 }
 
@@ -65,9 +67,12 @@ void Gui::prepare() {
 	loadStyles();
 
 	// Associate buttons with events
-	QObject::connect(coeffBtn, SIGNAL(clicked()), app, 
-		SLOT(Mathcore::getInstance().divDifferences())
-	);
+	signalMapper = new QSignalMapper(&Mathcore::getInstance());
+	signalMapper->setMapping(coeffBtn, coeffEdit->toPlainText());
+	QObject::connect(coeffBtn, SIGNAL(clicked()), 
+		signalMapper, SLOT(map()));
+	QObject::connect(signalMapper, SIGNAL(mapped(const QString &)),
+		&Mathcore::getInstance(), SLOT(divDifferences(const QString &)));
 }
 
 void Gui::run(QApplication * app) {
