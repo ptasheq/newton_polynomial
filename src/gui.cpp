@@ -7,8 +7,10 @@ Gui::Gui() : width(WIDTH), height(HEIGHT), title(TITLE) {
 	coeffBtn = new QPushButton(CAPTION, window);
 	coeffLabel = new QLabel("Coefficients of the Newton polynomial", window);
 	valueLabel = new QLabel("Value of the Newton polynomial", window);
+	resultLabel = new QLabel("Calculations results", window);
 	coeffEdit = new QTextEdit("", window);
 	valueEdit = new QTextEdit("", window);
+	resultEdit = new QTextEdit("", window);
 
 }
 
@@ -17,8 +19,10 @@ Gui::~Gui() {
 	delete valueBtn;
 	delete coeffLabel;
 	delete valueLabel;
+	delete resultLabel;
 	delete coeffEdit;
 	delete valueEdit;
+	delete resultEdit;
 	delete window;
 }
 
@@ -41,11 +45,16 @@ void Gui::prepare() {
 
 	coeffLabel->setGeometry(54, 10, 320, 30);
 	valueLabel->setGeometry(75, 170, 280, 30);
+	resultLabel->setGeometry(175, 330, 200, 30);
 
 	coeffEdit->setGeometry(20, 35, 340, 100);
 	valueEdit->setGeometry(20, 195, 340, 100);
+	resultEdit->setGeometry(20, 355, 460, 125);
 	coeffEdit->setToolTip("Firstly, enter values of nodes seperated with space, then press enter and type function values");
 	valueEdit->setToolTip("Firstly, enter values of nodes seperated with space, then press enter and type function values");
+	resultEdit->setToolTip("Here results of your calculaions are displayed");
+
+	resultEdit->setReadOnly(true);
 
 	window->resize(WIDTH, HEIGHT);
 	window->setWindowTitle(TITLE);

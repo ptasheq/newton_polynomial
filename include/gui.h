@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QTextEdit>
 
-#define HEIGHT 400
+#define HEIGHT 500
 #define WIDTH 500
 #define BTN_HEIGHT 30
 #define BTN_WIDTH 75
@@ -23,8 +23,8 @@ class Gui {
 		QApplication * app;
 		QWidget * window;
 		QPushButton * valueBtn, * coeffBtn;
-		QLabel * coeffLabel, * valueLabel;
-		QTextEdit * coeffEdit, * valueEdit;
+		QLabel * coeffLabel, * valueLabel, * resultLabel;
+		QTextEdit * coeffEdit, * valueEdit, * resultEdit;
 		int width, height;
 		QString title;
 		void loadStyles();
