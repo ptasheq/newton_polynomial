@@ -12,7 +12,6 @@ Gui::Gui() : width(WIDTH), height(HEIGHT), title(TITLE) {
 	coeffEdit = new QTextEdit("", window);
 	valueEdit = new QTextEdit("", window);
 	resultEdit = new QTextEdit("", window);
-
 }
 
 Gui::~Gui() {
@@ -66,13 +65,31 @@ void Gui::prepare() {
 	);
 	loadStyles();
 
+	Mathcore::getInstance().setOutput(resultEdit);
+
 	// Associate buttons with events
-	signalMapper = new QSignalMapper(&Mathcore::getInstance());
-	signalMapper->setMapping(coeffBtn, coeffEdit->toPlainText());
+	signalMapper = new QSignalMapper(this);
+	signalMapper->setMapping(coeffBtn, COEFF_BTN);
+	signalMapper->setMapping(valueBtn, VALUE_BTN);
 	QObject::connect(coeffBtn, SIGNAL(clicked()), 
 		signalMapper, SLOT(map()));
-	QObject::connect(signalMapper, SIGNAL(mapped(const QString &)),
-		&Mathcore::getInstance(), SLOT(divDifferences(const QString &)));
+	QObject::connect(valueBtn, SIGNAL(clicked()),
+		signalMapper, SLOT(map()));
+	QObject::connect(signalMapper, SIGNAL(mapped(const int)),
+		this, SLOT(onButtonClick(const int)));
+}
+
+void Gui::onButtonClick(const int objectId) {
+	switch(objectId) {
+		case COEFF_BTN:
+			Mathcore::getInstance().newtonCoeffs(coeffEdit->toPlainText());
+			break;
+		case VALUE_BTN:
+			Mathcore::getInstance().newtonValue(valueEdit->toPlainText());
+			break;
+		default:
+		break;
+	}
 }
 
 void Gui::run(QApplication * app) {

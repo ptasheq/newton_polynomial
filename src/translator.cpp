@@ -11,7 +11,7 @@ bool Translator::checkString(const QString & str) {
 		if (!isProperCharacter(str[i]))
 			break;
 	}
-	return (i < str.size());
+	return (i == str.size());
 }
 
 bool Translator::isProperCharacter(const QChar & ch) {

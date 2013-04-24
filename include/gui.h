@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QFile>
 #include <QTextEdit>
+#include <QObject>
 #include <QSignalMapper>
 #include <QString>
 
@@ -20,7 +21,10 @@
 #define CAPTION "Calculate"
 #define STYLE_FILE "style.qss"
 
-class Gui {
+enum {COEFF_BTN, VALUE_BTN};
+
+class Gui: public QObject {
+	Q_OBJECT
 	private:
 		QApplication * app;
 		QWidget * window;
@@ -36,6 +40,8 @@ class Gui {
 		Gui();
 		~Gui();
 		void run(QApplication *);
+	public slots:
+		void onButtonClick(const int);
 };
 
 #endif

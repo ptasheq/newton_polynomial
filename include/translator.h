@@ -11,7 +11,6 @@ class Translator {
 		static Translator & getInstance();
 		bool checkString(const QString &);
 	    bool isProperCharacter(const QChar &);
-
 };
 
 #endif

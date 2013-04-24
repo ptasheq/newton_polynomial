@@ -5,23 +5,26 @@
 #include <exception>
 #include <QObject>
 #include <QString>
+#include <QTextEdit>
 
 typedef unsigned int uint;
 
-class Mathcore: public QObject {
-	Q_OBJECT
+class Mathcore {
 	private:
 		long double * valueArray;
 		uint arraySize; 
-		Mathcore() : valueArray(NULL), arraySize(0) {}
+		QTextEdit * output;
+		intervalarth::IntervalArithmetic * intervalArithmetic;
+		Mathcore() : valueArray(NULL), arraySize(0), output(NULL), 
+			intervalArithmetic(new intervalarth::IntervalArithmetic()) {}
 	public:
 		~Mathcore();
-		long double newtonValue(uint, int *, long double *, int);
-		void newtonCoeffs(uint, int *, long double *);
+		void divDifferences(uint, uint *, long double *);
+		void newtonValue(const QString &);
+		void newtonCoeffs(const QString &);
 		void getValuesAsString(char *);
+		void setOutput(QTextEdit *);
 		static Mathcore & getInstance();
-	public slots:
-		void divDifferences(const QString &);
 };
 
 #endif
