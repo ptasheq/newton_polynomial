@@ -2,6 +2,7 @@
 #define TRANSLATOR_H
 
 #include <QString>
+#include <QChar>
 
 class Translator {
 	private:
@@ -9,8 +10,7 @@ class Translator {
 	public:
 		~Translator();
 		static Translator & getInstance();
-		bool checkString(const QString &);
-	    bool isProperCharacter(const QChar &);
+		short getNodeNumber(const QString &);
 };
 
 #endif

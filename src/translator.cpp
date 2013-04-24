@@ -3,19 +3,37 @@
 Translator::~Translator() {
 }
 
-// looks for improper characters
+// checks if numbers of nodes and values are identical and returns the number
 
-bool Translator::checkString(const QString & str) {
-	int i;
-	for (i = 0; i < str.size(); ++i) {
-		if (!isProperCharacter(str[i]))
-			break;
+short Translator::getNodeNumber(const QString & str) {
+	int i, nodes = 1, values = 1;
+	bool afterEnter = false;
+	if (str[0].isDigit()) {
+		for (i = 1; i < str.size(); ++i) {
+			if (!str[i].isDigit()) {
+				if (!str[i-1].isDigit() || !((str[i] == ' ') 
+				|| (afterEnter && str[i] == '.') || (str[i] == '\n'))) {
+					break;
+				}
+				if (str[i] == ' ' && i < str.size()-1) { // we don't want count some odd spaces in the end
+					if (afterEnter) {
+						++values;
+					}
+					else {
+						++nodes;
+					}
+				}
+				else if (str[i] == '\n' && i < str.size()-1) {
+					if (afterEnter) { // there should be only one enter
+						break;
+					}
+					afterEnter = true;
+				}
+			}
+		}
+		return ((i == str.size()) && (values == nodes)) ? nodes : -1;
 	}
-	return (i == str.size());
-}
-
-bool Translator::isProperCharacter(const QChar & ch) {
-	return ((ch <= '0' || ch >= '9') && ch != ' ' && ch != '.' && ch != '\n');
+	return -1;
 }
 
 Translator & Translator::getInstance() {

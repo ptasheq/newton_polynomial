@@ -33,9 +33,10 @@ void Mathcore::newtonValue(const QString & str) {
 }
 
 void Mathcore::newtonCoeffs(const QString & str) {
-	//if (Translator::getInstance().checkString(str))
-		output->append("Newton coefficients");		
-	output->append(str);
+	if (Translator::getInstance().getNodeNumber(str) > 0)
+		output->append("works");		
+	else
+		output->append("error");
 }
 
 void Mathcore::setOutput(QTextEdit * output) {
