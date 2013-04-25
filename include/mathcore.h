@@ -4,6 +4,7 @@
 #include "interval_arithmetic.h"
 #include "translator.h"
 #include <exception>
+#include <iostream>
 #include <QObject>
 #include <QString>
 #include <QTextEdit>
@@ -21,7 +22,7 @@ class Mathcore {
 		Mathcore();
 	public:
 		~Mathcore();
-		void divDifferences(uint, uint *, long double *);
+		void divDifferences(uint, uint *, interval *);
 		void newtonValue(const QString &);
 		void newtonCoeffs(const QString &);
 		void getValuesAsString(char *);

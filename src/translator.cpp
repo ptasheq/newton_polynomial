@@ -5,7 +5,7 @@ Translator::~Translator() {
 
 // checks if numbers of nodes and values are identical and returns the number
 
-short Translator::getNodeNumber(const QString & str) {
+unsigned short Translator::getNodeNumber(const QString & str) {
 	int i, nodes = 1, values = 1;
 	bool afterEnter = false;
 	if (str[0].isDigit()) {
@@ -31,9 +31,9 @@ short Translator::getNodeNumber(const QString & str) {
 				}
 			}
 		}
-		return ((i == str.size()) && (values == nodes)) ? nodes : -1;
+		return ((i == str.size()) && (values == nodes)) ? nodes : 0;
 	}
-	return -1;
+	return 0;
 }
 
 void Translator::stringToIntervals(intervalarth::IntervalArithmetic * ia, const QString & str, uint * nodeArray, interval * intervalArray) {

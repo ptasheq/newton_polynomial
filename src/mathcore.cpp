@@ -1,5 +1,4 @@
 #include "mathcore.h"
-#include "translator.h"
 
 using std::exception;
 
@@ -27,14 +26,20 @@ Mathcore & Mathcore::getInstance() {
 	return instance;
 }
 
-void Mathcore::divDifferences(uint, uint *, long double *) {
-	/*for (uint i = 1; i <= n; ++i) {
+void Mathcore::divDifferences(uint n, uint * nodeValues, interval * funcValues) {
+	if (n <= 1) {
+		return;
+	}
+	for (uint i = 1; i < n; ++i) {
 		if (nodeValues[i-1] == nodeValues[i])
 			throw identicalNodesException;
 	}
-	for (uint i = 1; i <= n; ++i) 
-		for (uint j = n-i; j >=0; ++j)
-				funcValues[j] = (funcValues[j+1] - funcValues[j]) / (nodeValues[j+1] - nodeValues[j]);*/
+	interval nodeDiff;
+	for (uint i = n-1; i > 0; --i) 
+		for (uint j = 0; j < i; ++j) {
+			nodeDiff.a = nodeDiff.b = nodeValues[j+n-i] - nodeValues[j];	
+			funcValues[j] = intervalArithmetic->IDiv(intervalArithmetic->ISub(funcValues[j+1], funcValues[j]), nodeDiff); 
+		}
 }
 
 void Mathcore::newtonValue(const QString & str) {
@@ -47,11 +52,9 @@ void Mathcore::newtonCoeffs(const QString & str) {
 		nodeArray = new uint [n];		
 		valueArray = new interval [n];
 		translator->stringToIntervals(intervalArithmetic, str, nodeArray, valueArray);
-		QString buf;
 		string a, b;
+		divDifferences(n, nodeArray, valueArray);
 		for (int i = 0; i < n; ++i) {
-			intervalArithmetic->IEndsToStrings(valueArray[i], a, b);
-			output->append(b.c_str());
 
 		}
 		delete nodeArray;
