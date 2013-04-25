@@ -2,21 +2,23 @@
 #define MATHCORE_H
 
 #include "interval_arithmetic.h"
+#include "translator.h"
 #include <exception>
 #include <QObject>
 #include <QString>
 #include <QTextEdit>
 
 typedef unsigned int uint;
+using intervalarth::interval;
 
 class Mathcore {
 	private:
-		long double * valueArray;
-		uint arraySize; 
+		interval * valueArray;
+		uint * nodeArray; 
 		QTextEdit * output;
 		intervalarth::IntervalArithmetic * intervalArithmetic;
-		Mathcore() : valueArray(NULL), arraySize(0), output(NULL), 
-			intervalArithmetic(new intervalarth::IntervalArithmetic()) {}
+		Translator * translator;
+		Mathcore();
 	public:
 		~Mathcore();
 		void divDifferences(uint, uint *, long double *);

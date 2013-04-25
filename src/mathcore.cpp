@@ -9,8 +9,17 @@ class DivByZeroException: public exception {
 class IdenticalNodesException: public exception {
 } identicalNodesException;
 
+Mathcore::Mathcore() {
+	valueArray = NULL;
+	nodeArray = 0;
+	output = NULL;
+	intervalArithmetic = new intervalarth::IntervalArithmetic();
+	translator = new Translator();
+}
+
 Mathcore::~Mathcore() {
 	delete intervalArithmetic;	
+	delete translator;
 }
 
 Mathcore & Mathcore::getInstance() {
@@ -33,8 +42,21 @@ void Mathcore::newtonValue(const QString & str) {
 }
 
 void Mathcore::newtonCoeffs(const QString & str) {
-	if (Translator::getInstance().getNodeNumber(str) > 0)
-		output->append("works");		
+	int n;
+	if ((n = translator->getNodeNumber(str)) > 0) {
+		nodeArray = new uint [n];		
+		valueArray = new interval [n];
+		translator->stringToIntervals(intervalArithmetic, str, nodeArray, valueArray);
+		QString buf;
+		string a, b;
+		for (int i = 0; i < n; ++i) {
+			intervalArithmetic->IEndsToStrings(valueArray[i], a, b);
+			output->append(b.c_str());
+
+		}
+		delete nodeArray;
+		delete valueArray;
+	}
 	else
 		output->append("error");
 }

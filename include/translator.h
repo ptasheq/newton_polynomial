@@ -3,14 +3,19 @@
 
 #include <QString>
 #include <QChar>
+#include <string>
+#include "interval_arithmetic.h"
+
+using std::string;
+using intervalarth::interval;
 
 class Translator {
-	private:
-		Translator(){}	
+	
 	public:
+		Translator(){}	
 		~Translator();
-		static Translator & getInstance();
 		short getNodeNumber(const QString &);
+		void stringToIntervals(intervalarth::IntervalArithmetic *, const QString &, uint *, interval *);
 };
 
 #endif

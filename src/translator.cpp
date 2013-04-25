@@ -36,9 +36,29 @@ short Translator::getNodeNumber(const QString & str) {
 	return -1;
 }
 
-Translator & Translator::getInstance() {
-	static Translator instance;
-	return instance;
+void Translator::stringToIntervals(intervalarth::IntervalArithmetic * ia, const QString & str, uint * nodeArray, interval * intervalArray) {
+	std::string buf;
+	int numberLength = 0, currentNode = 0;
+	bool afterEnter = false;
+
+	for (int i = 0; i < str.size(); ++i) {
+		buf[numberLength] = str[i].toAscii();
+		if (str[i] == ' ' || str[i] == '\n' || i == str.size()-1) {
+			numberLength = 0;
+			if (afterEnter) {
+				intervalArray[currentNode++] = ia->IntRead(buf);
+			}
+			else {
+				nodeArray[currentNode++] = std::atoi(buf.c_str());
+			}
+			if (str[i] == '\n') {
+				afterEnter = true;
+				currentNode = 0;
+			}
+			buf.clear();
+		}
+		else {
+			++numberLength;	
+		}
+	}
 }
-
-
