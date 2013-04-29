@@ -8,11 +8,11 @@ Translator::~Translator() {
 unsigned short Translator::getNodeNumber(const QString & str) {
 	int i, nodes = 1, values = 1;
 	bool afterEnter = false;
-	if (str[0].isDigit()) {
+	if (str[0].isDigit() || str[0] == '-') {
 		for (i = 1; i < str.size(); ++i) {
 			if (!str[i].isDigit()) {
-				if (!str[i-1].isDigit() || !((str[i] == ' ') 
-				|| (afterEnter && str[i] == '.') || (str[i] == '\n'))) {
+				if ((!str[i-1].isDigit() && str[i-1] != ' ' && str[i] != '-') || 
+				!isLegalCharacter(str[i])) {
 					break;
 				}
 				if (str[i] == ' ' && i < str.size()-1) { // we don't want count some odd spaces in the end
@@ -36,7 +36,7 @@ unsigned short Translator::getNodeNumber(const QString & str) {
 	return 0;
 }
 
-void Translator::stringToIntervals(intervalarth::IntervalArithmetic * ia, const QString & str, uint * nodeArray, interval * intervalArray) {
+void Translator::stringToIntervals(intervalarth::IntervalArithmetic * ia, const QString & str, int * nodeArray, interval * intervalArray) {
 	std::string buf;
 	int numberLength = 0, currentNode = 0;
 	bool afterEnter = false;

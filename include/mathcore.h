@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QString>
 #include <QTextEdit>
+#include <QInputDialog>
 
 typedef unsigned int uint;
 using intervalarth::interval;
@@ -15,14 +16,14 @@ using intervalarth::interval;
 class Mathcore {
 	private:
 		interval * valueArray;
-		uint * nodeArray; 
+		int * nodeArray; 
 		QTextEdit * output;
 		intervalarth::IntervalArithmetic * intervalArithmetic;
 		Translator * translator;
 		Mathcore();
 	public:
 		~Mathcore();
-		void divDifferences(uint, uint *, interval *);
+		void divDifferences(uint, int *, interval *);
 		void newtonValue(const QString &);
 		void newtonCoeffs(const QString &);
 		void getValuesAsString(char *);

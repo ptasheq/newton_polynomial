@@ -10,7 +10,7 @@ class IdenticalNodesException: public exception {
 
 Mathcore::Mathcore() {
 	valueArray = NULL;
-	nodeArray = 0;
+	nodeArray = NULL;
 	output = NULL;
 	intervalArithmetic = new intervalarth::IntervalArithmetic();
 	translator = new Translator();
@@ -26,7 +26,7 @@ Mathcore & Mathcore::getInstance() {
 	return instance;
 }
 
-void Mathcore::divDifferences(uint n, uint * nodeValues, interval * funcValues) {
+void Mathcore::divDifferences(uint n, int * nodeValues, interval * funcValues) {
 	if (n <= 1) {
 		return;
 	}
@@ -43,22 +43,45 @@ void Mathcore::divDifferences(uint n, uint * nodeValues, interval * funcValues) 
 }
 
 void Mathcore::newtonValue(const QString & str) {
-	output->append("Newton value");		
+	int n = translator->getNodeNumber(str);
+	if (n > 0) {
+		interval result, buf;
+		nodeArray = new int [n];
+		valueArray = new interval [n];
+		translator->stringToIntervals(intervalArithmetic, str, nodeArray, valueArray);
+		int node = QInputDialog::getInt(0, QString("Enter desired node"), QString("Node:"));
+		divDifferences(n, nodeArray, valueArray);
+		result = valueArray[0];
+		for (int i = 1; i < n; ++i) {
+			buf.a = buf.b = node - nodeArray[i];
+			result = intervalArithmetic->IAdd(intervalArithmetic->IMul(result, buf), valueArray[i]); 	
+		}
+		string a,b;
+		intervalArithmetic->IEndsToStrings(result, a, b);
+		output->append(a.c_str());
+		delete [] nodeArray;
+		delete [] valueArray;
+		
+	}
+	else {
+		output->append("error");
+	}
 }
 
 void Mathcore::newtonCoeffs(const QString & str) {
 	int n;
 	if ((n = translator->getNodeNumber(str)) > 0) {
-		nodeArray = new uint [n];		
+		nodeArray = new int [n];		
 		valueArray = new interval [n];
 		translator->stringToIntervals(intervalArithmetic, str, nodeArray, valueArray);
-		string a, b;
-		divDifferences(n, nodeArray, valueArray);
+		string a,b;
+		//divDifferences(n, nodeArray, valueArray);
 		for (int i = 0; i < n; ++i) {
-
+			intervalArithmetic->IEndsToStrings(valueArray[i], a, b);
+			output->append(a.c_str());
 		}
-		delete nodeArray;
-		delete valueArray;
+		delete [] nodeArray;
+		delete [] valueArray;
 	}
 	else
 		output->append("error");
