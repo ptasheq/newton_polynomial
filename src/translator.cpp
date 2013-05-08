@@ -62,3 +62,46 @@ void Translator::stringToIntervals(intervalarth::IntervalArithmetic * ia, const 
 		}
 	}
 }
+
+QString Translator::getExponentAsUnicode(int exp) {
+	QString str = (exp > 0) ? "x" : "";
+	while (exp > 0) {
+		switch(exp % 10) {
+			case 1:
+				str += QChar(EXP1);
+				break;
+			case 2: 
+				str += QChar(EXP2);
+				break;
+			case 3: 
+				str += QChar(EXP3);
+				break;
+			case 4:
+				str += QChar(EXP4);
+				break;
+			case 5: 
+				str += QChar(EXP5);
+				break;
+			case 6: 
+				str += QChar(EXP6);
+				break;
+			case 7:
+				str += QChar(EXP7);
+				break;
+			case 8: 
+				str += QChar(EXP8);
+				break;
+			case 9: 
+				str += QChar(EXP9);
+				break;
+			default:
+				str += QChar(EXP0);
+		}
+		exp /= 10;
+	}
+	return str;
+}
+
+QString Translator::getNumberAsQString(long double x) {
+	return QString(boost::lexical_cast<std::string>(x).c_str());
+}
