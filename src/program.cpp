@@ -1,5 +1,6 @@
 #include "libs.h"
 #include "gui.h"
+#include <iostream>
 
 Program::~Program() {
 	delete gui;

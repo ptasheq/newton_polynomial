@@ -28,7 +28,7 @@ class Translator {
 		Translator(){}	
 		~Translator();
 		unsigned short getNodeNumber(const QString &);
-		void stringToIntervals(intervalarth::IntervalArithmetic *, const QString &, int *, interval *);
+		void stringToIntervals(intervalarth::IntervalArithmetic *, const QString &, long double *, interval *);
 		QString getExponentAsUnicode(int);
 		QString getNumberAsQString(long double);
 };

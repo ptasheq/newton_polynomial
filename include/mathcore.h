@@ -12,22 +12,22 @@
 
 #define isZero(str, n) ((n == 1 && str[0] == '0') || (n == 2 && str[0] == '-' && str[1] == '0'))
 
+enum {SUCCESS, TOO_FEW_NODES, DIV_BY_ZERO, IDENTICAL_NODES};
+
 typedef unsigned int uint;
 using intervalarth::interval;
+using intervalarth::IntervalArithmetic;
 
 class Mathcore {
 	private:
-		interval * intervalValueArray;
-		long double * normalValueArray;
-		int * nodeArray; 
 		QTextEdit * output;
-		intervalarth::IntervalArithmetic * intervalArithmetic;
+		IntervalArithmetic * intervalArithmetic;
 		Translator * translator;
 		Mathcore();
 	public:
 		~Mathcore();
-		void divDifferences(uint, int *, interval *);
-		void divDifferences(uint, int *, long double *);
+		short divDifferences(uint, long double *, interval *);
+		short divDifferences(uint, long double *, long double *);
 		void newtonValue(const QString &);
 		void newtonCoeffs(const QString &);
 		void getValuesAsString(char *);
@@ -35,5 +35,9 @@ class Mathcore {
 		static Mathcore & getInstance();
 };
 
-#endif
+interval newtonVal(IntervalArithmetic *, uint, long double, long double *, interval *);
+long double newtonVal(uint, long double, long double *, long double *);
+void newtonCoeff(IntervalArithmetic *, uint, long double *, interval *);
+void newtonCoeff(uint, long double *, long double *);
 
+#endif
