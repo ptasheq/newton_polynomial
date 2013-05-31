@@ -6,8 +6,8 @@ Gui::Gui() : width(WIDTH), height(HEIGHT), title(TITLE) {
 	window = new QWidget();
 	valueBtn = new QPushButton(CAPTION, window);
 	coeffBtn = new QPushButton(CAPTION, window);
-	coeffLabel = new QLabel("Coefficients of the Newton polynomial", window);
-	valueLabel = new QLabel("Value of the Newton polynomial", window);
+	coeffLabel = new QLabel("Data for coefficients of the Newton polynomial", window);
+	valueLabel = new QLabel("Data for value of the Newton polynomial", window);
 	resultLabel = new QLabel("Calculations results", window);
 	coeffEdit = new QTextEdit("", window);
 	valueEdit = new QTextEdit("", window);
@@ -44,8 +44,8 @@ void Gui::prepare() {
 	coeffBtn->setGeometry(410, 35, BTN_WIDTH, BTN_HEIGHT);
 	valueBtn->setGeometry(410, 195, BTN_WIDTH, BTN_HEIGHT);
 
-	coeffLabel->setGeometry(54, 10, 320, 30);
-	valueLabel->setGeometry(75, 170, 280, 30);
+	coeffLabel->setGeometry(44, 10, 320, 30);
+	valueLabel->setGeometry(55, 170, 280, 30);
 	resultLabel->setGeometry(175, 330, 200, 30);
 
 	coeffEdit->setGeometry(20, 35, 340, 100);

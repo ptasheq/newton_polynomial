@@ -6,6 +6,8 @@
  */
 
 #include "interval_arithmetic.h"
+#include <sstream>
+#include <iomanip>
 
 namespace intervalarth {
 
@@ -710,8 +712,14 @@ interval IntervalArithmetic::IPi() {
 
 void IntervalArithmetic::IEndsToStrings(const interval & i, string & left,
 		string & right) {
-	left = boost::lexical_cast<string>(i.a);
-	right = boost::lexical_cast<string>(i.b);
+	std::stringstream ss;
+	ss << std::scientific << std::setprecision(15) << i.a;
+	left = ss.str();
+	ss.str("");
+	ss << std::scientific << std::setprecision(15) << i.b;
+	right = ss.str();
+	//left = boost::lexical_cast<string>(i.a);
+	//right = boost::lexical_cast<string>(i.b);
 }
 
 } /* namespace interval */

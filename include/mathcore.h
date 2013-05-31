@@ -8,7 +8,6 @@
 #include <QObject>
 #include <QString>
 #include <QTextEdit>
-#include <QInputDialog>
 
 #define isZero(str, n) ((n == 1 && str[0] == '0') || (n == 2 && str[0] == '-' && str[1] == '0'))
 
@@ -26,7 +25,7 @@ class Mathcore {
 		Mathcore();
 	public:
 		~Mathcore();
-		short divDifferences(uint, long double *, interval *);
+		short divDifferences(uint, interval *, interval *);
 		short divDifferences(uint, long double *, long double *);
 		void newtonValue(const QString &);
 		void newtonCoeffs(const QString &);
@@ -35,9 +34,9 @@ class Mathcore {
 		static Mathcore & getInstance();
 };
 
-interval newtonVal(IntervalArithmetic *, uint, long double, long double *, interval *);
+interval newtonVal(IntervalArithmetic *, uint, interval, interval *, interval *);
 long double newtonVal(uint, long double, long double *, long double *);
-void newtonCoeff(IntervalArithmetic *, uint, long double *, interval *);
+void newtonCoeff(IntervalArithmetic *, uint, interval *, interval *);
 void newtonCoeff(uint, long double *, long double *);
 
 #endif

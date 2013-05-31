@@ -16,20 +16,21 @@ Mathcore & Mathcore::getInstance() {
 	return instance;
 }
 
-short Mathcore::divDifferences(uint n, long double * nodeValues, interval * funcValues) {
+short Mathcore::divDifferences(uint n, interval * nodeValues, interval * funcValues) {
 	if (n <= 1) {
 		return TOO_FEW_NODES;
 	}
 	for (uint i = 1; i < n; ++i) {
-		if (nodeValues[i-1] == nodeValues[i])
+		if (nodeValues[i-1].a + nodeValues[i-1].b == nodeValues[i].a + nodeValues[i].b)
 			return IDENTICAL_NODES;
 	}
 	interval nodeDiff;
-	for (uint i = n-1; i > 0; --i) 
+	for (uint i = n-1; i > 0; --i) {
 		for (uint j = 0; j < i; ++j) {
-			nodeDiff.a = nodeDiff.b = nodeValues[j+n-i] - nodeValues[j];	
+			nodeDiff = intervalArithmetic->ISub(nodeValues[j+n-i], nodeValues[j]);	
 			funcValues[j] = intervalArithmetic->IDiv(intervalArithmetic->ISub(funcValues[j+1], funcValues[j]), nodeDiff); 
 		}
+	}
 	return SUCCESS;
 }
 
@@ -51,23 +52,30 @@ short Mathcore::divDifferences(uint n, long double * nodeValues, long double * f
 }
 
 void Mathcore::newtonValue(const QString & str) {
-	int n = translator->getNodeNumber(str);
+	bool intervalOnlyFlag = false;
+	int n = translator->getNodeNumber(str, intervalOnlyFlag);
 	if (n > 0) {
 		long double normalResult;
 		short errorFlag;
-		interval intervalResult;
+		interval intervalNode, intervalResult;
 		long double * nodeArray = new long double [n];
+		interval * intervalNodeArray = new interval [n];
 		interval * intervalValueArray = new interval [n];
 		long double * normalValueArray = new long double [n];
 
-		translator->stringToIntervals(intervalArithmetic, str, nodeArray, intervalValueArray);
+		translator->stringToIntervals(intervalArithmetic, str, intervalNodeArray, intervalValueArray);
 		for (int i = 0; i < n; ++i) {
 			normalValueArray[i] = (intervalValueArray[i].a + intervalValueArray[i].b)/2;
+			nodeArray[i] = (intervalNodeArray[i].a + intervalNodeArray[i].b)/2;
 		}
 
-		long double node = QInputDialog::getDouble(0, QString("Enter desired node"), QString("Node:"));
-		if ((errorFlag = divDifferences(n, nodeArray, normalValueArray))  != SUCCESS
-		|| (errorFlag = divDifferences(n, nodeArray, intervalValueArray)) != SUCCESS) {
+		if ((intervalNode = translator->getNodeFromDialog(intervalArithmetic, intervalOnlyFlag)).a == 0 &&
+			intervalNode.b == 0) {
+			output->append("Error");
+			return;
+		}
+		if ((errorFlag = divDifferences(n, intervalNodeArray, intervalValueArray))  != SUCCESS
+		|| (!intervalOnlyFlag && (errorFlag = divDifferences(n, nodeArray, normalValueArray)) != SUCCESS)) {
 			switch (errorFlag) {
 				case TOO_FEW_NODES:
 					output->append("Error: too few nodes!");
@@ -80,17 +88,19 @@ void Mathcore::newtonValue(const QString & str) {
 			}
 			return;
 		}
-		intervalResult = newtonVal(intervalArithmetic, n, node, nodeArray, intervalValueArray);
-		normalResult = newtonVal(n, node, nodeArray, normalValueArray);
+		intervalResult = newtonVal(intervalArithmetic, n, intervalNode, intervalNodeArray, intervalValueArray);
 		string a,b;
 		intervalArithmetic->IEndsToStrings(intervalResult, a, b);
-		output->append("Left headpoint:");
-		output->append(a.c_str());
-		output->append("Right headpoint:");
-		output->append(b.c_str());
-		output->append("Without interval arithmetic: ");
-		output->append(translator->getNumberAsQString(normalResult));
+		output->append("Using interval arithmetic:");
+		output->append(QString("[") + QString(a.c_str()) + QString(" ; ") + QString(b.c_str()) + QString("]"));
+		if (!intervalOnlyFlag) {
+			long double node = (intervalNode.a + intervalNode.b)/2;
+			normalResult = newtonVal(n, node, nodeArray, normalValueArray);
+			output->append("Without interval arithmetic: ");
+			output->append(translator->getNumberAsQString(normalResult));
+		}
 		delete [] nodeArray;
+		delete [] intervalNodeArray;
 		delete [] intervalValueArray;
 		delete [] normalValueArray;
 	}
@@ -100,22 +110,25 @@ void Mathcore::newtonValue(const QString & str) {
 }
 
 void Mathcore::newtonCoeffs(const QString & str) {
-	int n = translator->getNodeNumber(str);
+	bool intervalOnlyFlag = false;
+	int n = translator->getNodeNumber(str, intervalOnlyFlag);
 	if (n > 0) {
 		QString polynomial, polynomialNormal;
 		long double * nodeArray = new long double [n];		
 		interval * intervalValueArray = new interval [n];
+		interval * intervalNodeArray = new interval [n];
 		long double * normalValueArray = new long double [n];
 		bool isNegative = false;
 		short errorFlag;
 		interval xi;
 
-		translator->stringToIntervals(intervalArithmetic, str, nodeArray, intervalValueArray);
+		translator->stringToIntervals(intervalArithmetic, str, intervalNodeArray, intervalValueArray);
 		for (int i = 0; i < n; ++i) {
 			normalValueArray[i] = (intervalValueArray[i].a + intervalValueArray[i].b)/2;
+			nodeArray[i] = (intervalNodeArray[i].a + intervalNodeArray[i].b)/2;
 		}
-		if ((errorFlag = divDifferences(n, nodeArray, normalValueArray))  != SUCCESS
-		|| (errorFlag = divDifferences(n, nodeArray, intervalValueArray)) != SUCCESS) {
+		if ((errorFlag = divDifferences(n, intervalNodeArray, intervalValueArray))  != SUCCESS
+		|| (!intervalOnlyFlag && (errorFlag = divDifferences(n, nodeArray, normalValueArray)) != SUCCESS)) {
 			switch (errorFlag) {
 				case TOO_FEW_NODES:
 					output->append("Error: too few nodes!");
@@ -128,50 +141,42 @@ void Mathcore::newtonCoeffs(const QString & str) {
 			}
 			return;
 		}
-		newtonCoeff(intervalArithmetic, n, nodeArray, intervalValueArray);
-		newtonCoeff(n, nodeArray, normalValueArray);
+		newtonCoeff(intervalArithmetic, n, intervalNodeArray, intervalValueArray);
 		string a,b;
-		for (int i = 0; i < 2; ++i) {
-			string & number = (i == 0) ? a : b;
-			polynomial.clear();
+		if (!intervalOnlyFlag) {
+			newtonCoeff(n, nodeArray, normalValueArray);
 			for (int j = 0; j < n; ++j) {
-				if (i == 0 && normalValueArray[j] != 0.0) {
+				if (normalValueArray[j] != 0.0) {
 					xi.a = xi.b = normalValueArray[j];
 					intervalArithmetic->IEndsToStrings(xi, b, b);
-					if (b[0] == '-') {
-						b.erase(0,1);
-						isNegative = true;
-					}
 					if (!polynomialNormal.isEmpty()) {
+						if (b[0] == '-') {
+							b.erase(0,1);
+							isNegative = true;
+						}
 						polynomialNormal += isNegative ? " - " : " + ";
 					}
 					polynomialNormal += QString(b.c_str()) + translator->getExponentAsUnicode(n-j-1);
 					isNegative = false;
 				}
-				intervalArithmetic->IEndsToStrings(intervalValueArray[j], a, b);
-				if (!isZero(number, number.size())) {
-					if (number[0] == '-') {
-						number.erase(0,1);
-						isNegative = true;
-					}
-					if (!polynomial.isEmpty()) {
-						polynomial += isNegative ? " - " : " + ";
-					}
-					polynomial += QString(number.c_str()) + translator->getExponentAsUnicode(n-j-1);
-					isNegative = false;
-				}
 			}
-			if (i == 0) {
-				output->append("Without interval arithmetic:");
-				output->append(polynomialNormal);
-				output->append("Left endpoints of intervals:");	
-			}
-			else {
-				output->append("Right endpoints of intervals:");
-			}
-			output->append(polynomial);
+			output->append("Without interval arithmetic:");
+			output->append(polynomialNormal);
 		}
+		for (int j = 0; j < n; ++j) {
+			if (intervalValueArray[j].a != 0.0 || intervalValueArray[j].b != 0.0) {
+				intervalArithmetic->IEndsToStrings(intervalValueArray[j], a, b);
+				if (!polynomial.isEmpty()) {
+					polynomial += " + ";
+				}
+				
+				polynomial += QString("[") + QString(a.c_str()) + QString(" ; ") + QString(b.c_str()) + QString("] ") + translator->getExponentAsUnicode(n-j-1);
+			}
+		}
+		output->append("Using interval arithmetic:");
+		output->append(polynomial);
 		delete [] nodeArray;
+		delete [] intervalNodeArray;
 		delete [] intervalValueArray;
 		delete [] normalValueArray;
 	}
@@ -183,11 +188,11 @@ void Mathcore::setOutput(QTextEdit * output) {
 	this->output = output;
 }
 
-interval newtonVal(IntervalArithmetic * ia, uint n, long double node, long double * nodeArray, interval * valueArray) {
+interval newtonVal(IntervalArithmetic * ia, uint n, interval node, interval * nodeArray, interval * valueArray) {
 	
 	interval buf, result = valueArray[0];
 	for (uint i = 1; i < n; ++i) {
-		buf.a = buf.b = node - nodeArray[i];
+		buf =  ia->ISub(node, nodeArray[i]);
 		result = ia->IAdd(ia->IMul(result, buf), valueArray[i]);
 	}
 	return result;
@@ -202,13 +207,11 @@ long double newtonVal(uint n, long double node, long double * nodeArray, long do
 	return result;
 }
 
-void newtonCoeff(IntervalArithmetic * ia, uint n, long double * nodeArray, interval * valueArray) {
+void newtonCoeff(IntervalArithmetic * ia, uint n, interval * nodeArray, interval * valueArray) {
 
-	interval xi;
 	for (uint i = 1; i < n; ++i) {
-		xi.a = xi.b = nodeArray[i];
 		for (uint j = i; j > 1; --j) {
-			valueArray[j] = ia->ISub(valueArray[j], ia->IMul(valueArray[j-1], xi));
+			valueArray[j] = ia->ISub(valueArray[j], ia->IMul(valueArray[j-1], nodeArray[i]));
 		}
 	}
 }

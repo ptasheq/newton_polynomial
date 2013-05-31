@@ -4,6 +4,7 @@
 #include <QString>
 #include <QChar>
 #include <string>
+#include <QInputDialog>
 #include "interval_arithmetic.h"
 
 #define EXP0 0x2070
@@ -17,7 +18,7 @@
 #define EXP8 0x2078
 #define EXP9 0x2079
 
-#define isLegalCharacter(x) ((x == ' ') || (x == '-') || (x == '.') || (x == '\n'))
+#define isLegalCharacter(x) ((x == ' ') || (x == '-') || (x == '.') || (x == '\n') || (x == '[') || (x == ']') || (x == ';'))
 
 using std::string;
 using intervalarth::interval;
@@ -27,10 +28,11 @@ class Translator {
 	public:
 		Translator(){}	
 		~Translator();
-		unsigned short getNodeNumber(const QString &);
-		void stringToIntervals(intervalarth::IntervalArithmetic *, const QString &, long double *, interval *);
+		unsigned short getNodeNumber(const QString &, bool &);
+		void stringToIntervals(intervalarth::IntervalArithmetic *, const QString &, interval *, interval *);
 		QString getExponentAsUnicode(int);
 		QString getNumberAsQString(long double);
+		interval getNodeFromDialog(intervalarth::IntervalArithmetic *, bool &);
 };
 
 #endif
